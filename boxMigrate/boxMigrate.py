@@ -43,7 +43,11 @@ def filterNC_latlon(dsetName,keys,lat,lon,laty,lonx):
     
     ds = nc.Dataset(os.path.splitext(dsetName)[0]+'_filt.nc','w',format='NETCDF4_CLASSIC')
     Longitude = ds.createDimension('Longitude',lonx[1]-lonx[0])
+    var = ds.createVariable('Longitude', 'f4', ('Longitude',))
+    var[:] = dset['Longitude'][lonx[0]:lonx[1]]
     Latitude = ds.createDimension('Latitude',laty[0]-laty[1])
+    var = ds.createVariable('Latitude', 'f4', ('Latitude',))
+    var[:] = dset['Latitude'][laty[1]:laty[0]]
     
     countUp = 0
     for key in keys:
@@ -61,7 +65,7 @@ def filterNC_latlon(dsetName,keys,lat,lon,laty,lonx):
                 if countUp == 1:
                     Day = ds.createDimension('Day',len(dset[key][:,1,1,1]))
                     Stats = ds.createDimension('Stats',len(dset[key][1,:,1,1]))
-                var = ds.createVariable(key, 'f4', ('Day', 'Stats', 'Longitude', 'Latitude'))
+                var = ds.createVariable(key, 'f4', ('Day', 'Stats', 'Longitude', 'Latitude',))
                 var[:,:,:,:] = value
         except:
             print("An exception occurred")

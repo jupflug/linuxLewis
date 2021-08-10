@@ -12,7 +12,7 @@ import numpy as np
 
 id = '4stt8wd7hn5c19obxhh2kpnf7419pni6'
 secret = 'UfS1HnLjbgGeQuh4dtIXBJRT2kVdQC4M'
-token = '7AaEHB77XoAN110zpUf8JwrmDfOU8SfL'
+token = 'QrJrO9Z5hg7DtrAjKrHITQTiCawR97Kn'
 
 target_dir = 'Rocky_Pflug'
 
