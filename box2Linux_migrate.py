@@ -12,15 +12,15 @@ import numpy as np
 
 id = '4stt8wd7hn5c19obxhh2kpnf7419pni6'
 secret = 'UfS1HnLjbgGeQuh4dtIXBJRT2kVdQC4M'
-token = 'QrJrO9Z5hg7DtrAjKrHITQTiCawR97Kn'
+token = '5syKM4iqoCr3kSjC2qIVqUTCYo9UgVU6'
 
 target_dir = 'Rocky_Pflug'
 
-subdirs = ['N40_0W106_0_agg_16','WY2020']
+# subdirs = ['N40_0W106_0_agg_16','WY2020']
 
 out_path = '/scratch/summit/jupf7869/500m/'
 
-keys = ['Ta_Post','PPT_Post','SWE_Post','SCA_Post']
+keys = ['B_Prior','CV_Prior','CVis_Prior','Weights']
 
 xMin = 410000; xMax = 463500
 yMin = 4414000; yMax = 4495000
@@ -50,7 +50,7 @@ print(root_directory)
 
 yrRange = range(1985,2021)
 for year in yrRange:
-    subdirs = ['N40_0W106_0_agg_16','WY'+str(year)]
+    subdirs = ['N40_0W106_0_agg_16','CV_weights','WY'+str(year)]
 #     print(subdirs)
     boxMigrate.download_data(root_directory,subdirs,client,out_path,
                          filter='latlon',lon = lon,lat = lat,keys = keys)

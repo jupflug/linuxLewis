@@ -3,6 +3,11 @@ import numpy as np
 import netCDF4 as nc
 import os
 
+# slicing dimension
+def slicing_dim(data,dim,start,end):
+    data = data.take(indices=range(start,end),axis=dim)
+    return data
+
 # global function for iteratively downloading subfiles within the root folder
 def iterate_download(folder,name):
     directories = folder.get_items()
@@ -54,32 +59,27 @@ def filterNC_latlon(dsetName,keys,lat,lon,laty,lonx):
     var = ds.createVariable('Latitude', 'f4', ('Latitude',))
     var[:] = dset['Latitude'][laty[1]:laty[0]]
     
-#     fill the filtered netcdf file
-#     loop through the desired netcdf keys
-    countUp = 0
     for key in keys:
+        print(key)
         try:
-#              if the netcdf key (variable) doesnt exist, then eception
-            test = dset[key]
-            countUp += 1
-#             For now: hack for differentiating FORCING and SWE files (fix)
-            if dim_len == 3:
-                value = dset[key][:,lonx[0]:lonx[1],laty[1]:laty[0]]
-#                 if the first time through, create the day dimension
-                if countUp == 1:
-                    Day = ds.createDimension('Day',len(dset[key][:,1,1]))
-                var = ds.createVariable(key, 'f4', ('Day', 'Longitude', 'Latitude',))
-                var[:,:,:] = value
-#             For now: hack for differentiating FORCING and SWE files (fix)
-            else:
-                value = dset[key][:,:,lonx[0]:lonx[1],laty[1]:laty[0]]
-                if countUp == 1:
-                    Day = ds.createDimension('Day',len(dset[key][:,1,1,1]))
-                    Stats = ds.createDimension('Stats',len(dset[key][1,:,1,1]))
-                var = ds.createVariable(key, 'f4', ('Day', 'Stats', 'Longitude', 'Latitude',))
-                var[:,:,:,:] = value
+            dims = dset[key].dimensions
         except:
-            print("An exception occurred")
+            continue
+        value = dset[key][:]
+        for dimCount,dim in enumerate(dims):
+            print(dim)
+            if (dim == 'Latitude'):
+                value = slicing_dim(value,dimCount,laty[1],laty[0])
+            elif (dim == 'Longitude'):
+                value = slicing_dim(value,dimCount,lonx[0],lonx[1])
+            else:
+                try:
+                    ds.createDimension(dim,dset[key].shape[dimCount])
+                except:
+                    print('Already created this dimension')
+                
+        var = ds.createVariable(key, 'f4', dims)
+        var[:] = value
     
     dset.close()
     ds.close()
